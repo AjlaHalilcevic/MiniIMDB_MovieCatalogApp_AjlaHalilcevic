@@ -1,6 +1,7 @@
 package com.example.miniimdb;
 
 import android.os.Bundle;
+import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,7 +26,11 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewMovies = findViewById(R.id.recyclerViewMovies);
 
         movieList = MovieData.getMovies();
-        movieAdapter = new MovieAdapter(movieList);
+        movieAdapter = new MovieAdapter(movieList, movie -> {
+            Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
+            intent.putExtra("movie", movie);
+            startActivity(intent);
+        });
 
         recyclerViewMovies.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewMovies.setAdapter(movieAdapter);
