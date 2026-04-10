@@ -14,13 +14,12 @@ import com.example.miniimdb.model.Movie;
 
 import java.util.ArrayList;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
-    private final ArrayList<Movie> movieList;
+    private ArrayList<Movie> movieList;
     private final OnMovieClickListener listener;
 
     public interface OnMovieClickListener {
         void onMovieClick(Movie movie);
     }
-
     public MovieAdapter(ArrayList<Movie> movieList, OnMovieClickListener listener) {
         this.movieList = movieList;
         this.listener = listener;
@@ -48,9 +47,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public int getItemCount() {
         return movieList.size();
     }
+
+    public void updateList(ArrayList<Movie> newList) {
+        movieList = newList;
+        notifyDataSetChanged();
+    }
     public static class MovieViewHolder extends RecyclerView.ViewHolder {
         ImageView imageMoviePoster;
-        TextView textMovieTitle, textMovieGenre, textMovieRating;
+        TextView textMovieTitle;
+        TextView textMovieGenre;
+        TextView textMovieRating;
 
         public MovieViewHolder(@NonNull View itemView) {
             super(itemView);

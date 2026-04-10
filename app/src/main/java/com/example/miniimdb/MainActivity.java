@@ -2,6 +2,9 @@ package com.example.miniimdb;
 
 import android.os.Bundle;
 import android.content.Intent;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,7 +18,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerViewMovies;
-    private ArrayList<Movie> movieList;
+    private EditText editTextSearch;
+    private ArrayList<Movie> fullMovieList;
     private MovieAdapter movieAdapter;
 
     @Override
@@ -24,9 +28,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         recyclerViewMovies = findViewById(R.id.recyclerViewMovies);
+        editTextSearch = findViewById(R.id.editTextSearch);
 
-        movieList = MovieData.getMovies();
-        movieAdapter = new MovieAdapter(movieList, movie -> {
+        fullMovieList = MovieData.getMovies();
+
+        movieAdapter = new MovieAdapter(new ArrayList<>(fullMovieList), movie -> {
             Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
             intent.putExtra("movie", movie);
             startActivity(intent);
@@ -34,5 +40,38 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerViewMovies.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewMovies.setAdapter(movieAdapter);
+
+        editTextSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterMovies(s.toString().trim());
+
+            }
+        });
+    }
+
+    private void filterMovies(String query) {
+        ArrayList<Movie> filteredList = new ArrayList<>();
+
+        if (query.isEmpty()) {
+            filteredList.addAll(fullMovieList);
+        } else{
+            for (Movie movie : fullMovieList) {
+                if (movie.getTitle().toLowerCase().contains(query.toLowerCase())) {
+                    filteredList.add(movie);
+                }
+            }
+        }
+        movieAdapter.updateList(filteredList);
     }
 }
