@@ -7,6 +7,10 @@ import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.Button;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +28,24 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Movie> fullMovieList;
     private MovieAdapter movieAdapter;
 
+    private final ActivityResultLauncher<Intent> detailsLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    String movieTitle = result.getData().getStringExtra("movieTitle");
+                    float updateRating = result.getData().getFloatExtra("updatedRating", -1f);
+
+                    if (movieTitle != null && updateRating >= 0f) {
+                        for (Movie movie : fullMovieList) {
+                            if (movie.getTitle().equals(movieTitle)) {
+                                movie.setRating(updateRating);
+                                break;
+                            }
+                        }
+                        filterMovies(editTextSearch.getText().toString().trim());
+                    }
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         movieAdapter = new MovieAdapter(new ArrayList<>(fullMovieList), movie -> {
             Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
             intent.putExtra("movie", movie);
-            startActivity(intent);
+            detailsLauncher.launch(intent);
         });
 
         recyclerViewMovies.setLayoutManager(new LinearLayoutManager(this));
@@ -72,13 +94,15 @@ public class MainActivity extends AppCompatActivity {
 
         if (query.isEmpty()) {
             filteredList.addAll(fullMovieList);
-        } else{
+        } else {
             for (Movie movie : fullMovieList) {
                 if (movie.getTitle().toLowerCase().contains(query.toLowerCase())) {
                     filteredList.add(movie);
                 }
             }
         }
+
         movieAdapter.updateList(filteredList);
     }
+
 }

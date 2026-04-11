@@ -6,8 +6,12 @@ import com.example.miniimdb.model.Actor;
 
 import java.util.ArrayList;
 public class MovieData {
+    private static ArrayList<Movie> movies;
     public static ArrayList<Movie> getMovies() {
-        ArrayList<Movie> movies = new ArrayList<>();
+        if (movies != null) {
+            return movies;
+        }
+        movies = new ArrayList<>();
 
         ArrayList<Actor> actors1 = new ArrayList<>();
         actors1.add(new Actor("Leonardo DiCaprio", R.drawable.ic_actor_placeholder));

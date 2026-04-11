@@ -1,12 +1,15 @@
 package com.example.miniimdb;
 
 import android.os.Bundle;
+import android.content.Intent;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.miniimdb.model.Actor;
@@ -21,6 +24,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private TextView textDetailDescription;
     private LinearLayout layoutActorsContainer;
     private Button buttonFavorite;
+    private RatingBar ratingBarMovie;
+
+    private Movie movie;
+    private float currentRating = -1f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +41,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
         textDetailDescription = findViewById(R.id.textDetailDescription);
         layoutActorsContainer = findViewById(R.id.layoutActorsContainer);
         buttonFavorite = findViewById(R.id.buttonFavorite);
+        ratingBarMovie = findViewById(R.id.ratingBarMovie);
 
-        Movie movie = (Movie) getIntent().getSerializableExtra("movie");
+        movie = (Movie) getIntent().getSerializableExtra("movie");
 
         if (movie != null) {
             imageDetailPoster.setImageResource(movie.getPosterResId());
@@ -43,6 +51,19 @@ public class MovieDetailsActivity extends AppCompatActivity {
             textDetailGenre.setText(movie.getGenre());
             textDetailRating.setText("Rating: " + movie.getRating());
             textDetailDescription.setText(movie.getDescription());
+
+            currentRating = movie.getRating();
+
+            float appRating = movie.getRating() / 2.0f;
+            ratingBarMovie.setRating(appRating);
+
+            ratingBarMovie.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
+                if (fromUser) {
+                    currentRating = rating * 2.0f;
+                    textDetailRating.setText("Rating: " + currentRating);
+                    Toast.makeText(this, "Rating updated", Toast.LENGTH_SHORT).show();
+                }
+            });
 
             updateFavoriteButton(movie);
 
@@ -65,6 +86,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 layoutActorsContainer.addView(actorText);
             }
         }
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                sendResultFinish();
+            }
+        });
     }
     private void updateFavoriteButton(Movie movie) {
         if (FavoritesManager.isFavorite(movie)) {
@@ -72,5 +99,14 @@ public class MovieDetailsActivity extends AppCompatActivity {
         } else {
             buttonFavorite.setText("Add to Favorites");
         }
+    }
+    private void sendResultFinish() {
+        if (movie != null && currentRating >= 0f) {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("movieTitle", movie.getTitle());
+            resultIntent.putExtra("updatedRating", currentRating);
+            setResult(RESULT_OK, resultIntent);
+        }
+        finish();
     }
 }

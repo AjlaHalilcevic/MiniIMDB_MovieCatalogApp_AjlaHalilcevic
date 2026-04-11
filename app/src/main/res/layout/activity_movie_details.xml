@@ -44,6 +44,15 @@
             android:text="Rating: 8.5"
             android:textSize="18sp" />
 
+        <RatingBar
+            android:id="@+id/ratingBarMovie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:numStars="5"
+            android:stepSize="0.5"
+            android:isIndicator="false" />
+
         <TextView
             android:id="@+id/textDetailDescription"
             android:layout_width="match_parent"
