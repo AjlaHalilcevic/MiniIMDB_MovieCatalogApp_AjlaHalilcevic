@@ -52,6 +52,13 @@
             android:text="Description"
             android:textSize="16sp" />
 
+        <Button
+            android:id="@+id/buttonFavorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Add to Favorites" />
+
         <TextView
             android:id="@+id/textActorsTitle"
             android:layout_width="wrap_content"

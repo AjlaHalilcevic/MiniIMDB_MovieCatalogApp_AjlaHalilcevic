@@ -1,14 +1,17 @@
 package com.example.miniimdb;
 
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.miniimdb.model.Actor;
 import com.example.miniimdb.model.Movie;
+import com.example.miniimdb.utils.FavoritesManager;
 
 public class MovieDetailsActivity extends AppCompatActivity {
     private ImageView imageDetailPoster;
@@ -17,6 +20,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private TextView textDetailRating;
     private TextView textDetailDescription;
     private LinearLayout layoutActorsContainer;
+    private Button buttonFavorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +33,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         textDetailRating = findViewById(R.id.textDetailRating);
         textDetailDescription = findViewById(R.id.textDetailDescription);
         layoutActorsContainer = findViewById(R.id.layoutActorsContainer);
+        buttonFavorite = findViewById(R.id.buttonFavorite);
 
         Movie movie = (Movie) getIntent().getSerializableExtra("movie");
 
@@ -39,6 +44,19 @@ public class MovieDetailsActivity extends AppCompatActivity {
             textDetailRating.setText("Rating: " + movie.getRating());
             textDetailDescription.setText(movie.getDescription());
 
+            updateFavoriteButton(movie);
+
+            buttonFavorite.setOnClickListener(v -> {
+                if (FavoritesManager.isFavorite(movie)) {
+                    FavoritesManager.removeFromFavorites(movie);
+                    Toast.makeText(this, "Removed from Favorites", Toast.LENGTH_SHORT).show();
+                } else {
+                    FavoritesManager.addToFavorites(movie);
+                    Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show();
+                }
+                updateFavoriteButton(movie);
+            });
+
             for (Actor actor : movie.getActors()) {
                 TextView actorText = new TextView(this);
                 actorText.setText(". " + actor.getName());
@@ -46,6 +64,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 actorText.setPadding(0, 8, 0, 8);
                 layoutActorsContainer.addView(actorText);
             }
+        }
+    }
+    private void updateFavoriteButton(Movie movie) {
+        if (FavoritesManager.isFavorite(movie)) {
+            buttonFavorite.setText("Remove from Favorites");
+        } else {
+            buttonFavorite.setText("Add to Favorites");
         }
     }
 }
