@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerViewMovies;
     private EditText editTextSearch;
+    private Button buttonOpenFavorites;
     private ArrayList<Movie> fullMovieList;
     private MovieAdapter movieAdapter;
 
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerViewMovies = findViewById(R.id.recyclerViewMovies);
         editTextSearch = findViewById(R.id.editTextSearch);
+        buttonOpenFavorites = findViewById(R.id.buttonOpenFavorites);
 
         fullMovieList = MovieData.getMovies();
 
@@ -57,6 +60,10 @@ public class MainActivity extends AppCompatActivity {
                 filterMovies(s.toString().trim());
 
             }
+        });
+        buttonOpenFavorites.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, FavoritesActivity.class);
+            startActivity(intent);
         });
     }
 
