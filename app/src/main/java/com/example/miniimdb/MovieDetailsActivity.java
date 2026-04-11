@@ -83,11 +83,15 @@ public class MovieDetailsActivity extends AppCompatActivity {
             });
 
             for (Actor actor : movie.getActors()) {
-                TextView actorText = new TextView(this);
-                actorText.setText(". " + actor.getName());
-                actorText.setTextSize(16f);
-                actorText.setPadding(0, 8, 0, 8);
-                layoutActorsContainer.addView(actorText);
+                LinearLayout actorItem = (LinearLayout) getLayoutInflater().inflate(R.layout.item_actor, layoutActorsContainer, false);
+
+                ImageView imageActor = actorItem.findViewById(R.id.imageActor);
+                TextView textActorName = actorItem.findViewById(R.id.textActorName);
+
+                imageActor.setImageResource(actor.getImageResId());
+                textActorName.setText(actor.getName());
+
+                layoutActorsContainer.addView(actorItem);
             }
         }
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
