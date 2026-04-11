@@ -6,6 +6,7 @@ import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.miniimdb.adapter.MovieAdapter;
 import com.example.miniimdb.model.Movie;
@@ -23,6 +24,9 @@ public class FavoritesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorites);
+
+        Toolbar toolbarFavorites = findViewById(R.id.toolbarFavorites);
+        setSupportActionBar(toolbarFavorites);
 
         recyclerViewFavorites = findViewById(R.id.recyclerViewFavorites);
         favoriteMovies = FavoritesManager.getFavoriteMovies();

@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.miniimdb.model.Actor;
 import com.example.miniimdb.model.Movie;
@@ -33,6 +34,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+
+        Toolbar toolbarDetails = findViewById(R.id.toolbarDetails);
+        setSupportActionBar(toolbarDetails);
 
         imageDetailPoster = findViewById(R.id.imageDetailPoster);
         textDetailTitle = findViewById(R.id.textDetailTitle);
